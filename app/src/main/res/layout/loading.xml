@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--<LinearLayout-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="30dp"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical">-->
+
+        <!--&lt;!&ndash;<com.bilibili.magicasakura.widgets.TintImageView&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_centerInParent="true"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_marginTop="60dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/anim_image"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="25dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="20dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:padding="1dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;app:imageTint="@color/theme_color_primary"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:src="@dra" />&ndash;&gt;-->
+
+        <!--<TextView-->
+            <!--android:layout_marginTop="60dp"-->
+            <!--android:id="@+id/anim_text"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:text="努力加载中..."-->
+            <!--android:textColor="#000000"-->
+            <!--android:textSize="14sp" />-->
+    <!--</LinearLayout>-->
+
+
+</android.support.constraint.ConstraintLayout>

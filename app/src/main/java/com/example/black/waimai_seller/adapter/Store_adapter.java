@@ -20,7 +20,6 @@ public class Store_adapter extends BaseAdapter {
     private List<store> store_list;
     private Context context;
     private LayoutInflater layoutInflater;
-    private imageLoader imageshow = new imageLoader ();
 
     public Store_adapter(Context context, List<store> list){
         this.context = context;
@@ -62,7 +61,7 @@ public class Store_adapter extends BaseAdapter {
         holder.add.setText (store_list.get (position).store_add.toString ());
         if(store_list.get (position).store_img != null && holder.imageView != null){
             Log.e ("tag","执行一次" + store_list.get (position).store_img.toString ());
-            imageshow.displayImg(store_list.get (position).store_img.toString () , holder.imageView);
+            imageLoader.getIns().displayImg(store_list.get (position).store_img.toString () , holder.imageView);
         }
 
         return convertView;

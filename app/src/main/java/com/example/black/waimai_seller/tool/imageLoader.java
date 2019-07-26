@@ -22,6 +22,8 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.example.black.waimai_seller.R;
+
 public class imageLoader {
 
 
@@ -29,11 +31,24 @@ public class imageLoader {
     private String str_url;
     private ImageView imageView;
     ExecutorService executorService;
+    final int yu_img_id = R.drawable.nopic;                        //预展示图片
     private Map<ImageView, String> imageViews = Collections.synchronizedMap(new WeakHashMap<ImageView, String> ());
+    private memorycache memorycache = new memorycache ();
 
-    public imageLoader(){
+
+
+
+    private imageLoader(){
         executorService= Executors.newFixedThreadPool(5);
     }
+
+    private static imageLoader instance = null;
+    public static imageLoader getIns(){
+        if (instance == null)
+            instance = new imageLoader();
+        return instance;
+    }
+
 
     Handler handler = new Handler (){
 
@@ -50,11 +65,18 @@ public class imageLoader {
     public void displayImg(String url, ImageView imageView){
         imageViews.put (imageView,url);
 
-        queueImg(url,imageView);
+        //从缓存中判断
+        bitmap = memorycache.getcache (url);
+        if(bitmap != null){
+            imageView.setImageBitmap (bitmap);
+        }else{
+            queueImg(url,imageView);
+            imageView.setImageResource (yu_img_id);
+        }
+
     }
 
     void queueImg(String uri , ImageView imageView){
-        PhotoToLoad photoToLoad = new PhotoToLoad (uri,imageView);
         PhotoToLoad p=new PhotoToLoad(uri, imageView);
         executorService.submit(new PhotosLoader(p));
     }
@@ -78,10 +100,19 @@ public class imageLoader {
 
         @Override
         public void run() {
+
+            //加载图片
             Bitmap bmp=getBitmap(photoToLoad.url);
+            Log.e("tag-thread",Thread.currentThread ().getName ().toString ());
+
+            //存入缓存
+            memorycache.putcache (photoToLoad.url,bmp);
+
+            //展示图片
             BitmapDisplayer bd = new BitmapDisplayer(bmp, photoToLoad);
             Activity a=(Activity)photoToLoad.imageView.getContext();
             a.runOnUiThread(bd);
+
         }
     }
 
@@ -152,5 +183,8 @@ public class imageLoader {
         return newBitmap;
     }
 
-
+    //
+    public void clearcache(){
+        memorycache.clearcache ();
+    }
 }
