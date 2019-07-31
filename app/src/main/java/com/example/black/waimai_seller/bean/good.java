@@ -1,6 +1,4 @@
-package com.example.black.waimai_seller.base;
-
-import android.widget.ImageView;
+package com.example.black.waimai_seller.bean;
 
 public class good {
 

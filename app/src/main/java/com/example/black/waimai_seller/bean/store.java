@@ -1,4 +1,4 @@
-package com.example.black.waimai_seller.base;
+package com.example.black.waimai_seller.bean;
 
 public class store {
 
