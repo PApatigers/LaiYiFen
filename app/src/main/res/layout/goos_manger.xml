@@ -4,18 +4,40 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/add_good"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="新增商品"
-        android:layout_gravity="bottom"/>
+    <include layout="@layout/toolbar"/>
 
-    <ListView
-        android:id="@+id/goods_list"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    </ListView>
+
+        <ListView
+            android:id="@+id/goods_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </ListView>
+
+        <TextView
+            android:id="@+id/no_good"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="无商品"/>
+
+        <TextView
+            android:id="@+id/error_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="请求异常"/>
+
+        <TextView
+            android:id="@+id/loading_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="正在加载..."/>
+    </FrameLayout>
+
 
 
 </LinearLayout>

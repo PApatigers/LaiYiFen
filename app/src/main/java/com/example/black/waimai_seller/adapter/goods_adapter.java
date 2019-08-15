@@ -21,7 +21,6 @@ public class goods_adapter extends BaseAdapter {
     private List<good> good_list;
     private Context context;
     private LayoutInflater layoutInflater;
-    private imageLoader imageshow = new imageLoader ();
 
     public goods_adapter(Context context, List<good> list){
         this.context = context;
@@ -66,7 +65,7 @@ public class goods_adapter extends BaseAdapter {
             holder.Inventoe.setText (String.valueOf ("库存：" + good_list.get (position).inventory));
             if(good_list.get (position).good_image != null && holder.imageView != null){
                 Log.e ("tag","执行一次" + good_list.get (position).good_image.toString ());
-                imageshow.displayImg(good_list.get (position).good_image.toString () , holder.imageView);
+                imageLoader.getIns().displayImg(good_list.get (position).good_image.toString () , holder.imageView);
             }
         }
 

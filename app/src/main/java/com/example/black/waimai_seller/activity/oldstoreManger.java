@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.black.waimai_seller.adapter.Store_adapter;
@@ -35,6 +37,7 @@ public class oldstoreManger extends Activity {
     private List<store> store_list;
     private ListView store_listview;
     private Store_adapter adapter;
+    private Toolbar toolbar;
 
     Handler handler = new Handler (){
         @Override
@@ -61,6 +64,7 @@ public class oldstoreManger extends Activity {
     }
 
     void init(){
+        init_toolbar();
         store_listview = findViewById (R.id.store_list);
         adapter = new Store_adapter (this,store_list);
         new Thread (){
@@ -78,6 +82,31 @@ public class oldstoreManger extends Activity {
             }
         });
     }
+    void init_toolbar(){
+        toolbar = findViewById (R.id.toolbar);
+        toolbar.inflateMenu (R.menu.store_add);
+        toolbar.setOnMenuItemClickListener (new Toolbar.OnMenuItemClickListener ( ) {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId())
+                {
+                    case R.id.store_add:
+                        Intent intent1 = new Intent (oldstoreManger.this,new_store.class);
+                        startActivity (intent1);
+                        break;
+                }
+                return false;
+            }
+        });
+        toolbar.setNavigationIcon (R.drawable.ic_back);
+        toolbar.setNavigationOnClickListener (new View.OnClickListener ( ) {
+            @Override
+            public void onClick(View v) {
+                oldstoreManger.this.finish ();
+            }
+        });
+    }
+
 
     void getdata(){
         OkHttpClient client = new OkHttpClient ();
@@ -114,9 +143,12 @@ public class oldstoreManger extends Activity {
 
     //进入店铺
     void in_store(int position){
-        Intent intent = new Intent (this,goods_manger.class);
-        intent.putExtra ("store_id",store_list.get (position).store_id);
+        Intent intent = new Intent (this,GoodMangerActivity.class);
+        intent.putExtra("storeId",""+store_list.get (position).store_id);
+        intent.putExtra("storeName",store_list.get(position).store_name);
+        intent.putExtra("storeIcon",store_list.get(position).store_img);
         startActivity(intent);
+        Log.v("storeteset",store_list.get (position).store_id + "+" +store_list.get (position).store_name +"+"+ store_list.get (position).store_img);
     }
 
 }

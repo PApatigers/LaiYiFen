@@ -1,37 +1,75 @@
 package com.example.black.waimai_seller;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import android.support.design.widget.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+import com.example.black.waimai_seller.adapter.pager_adapter;
+import com.example.black.waimai_seller.fragement.*;
 
-    private Button newstore,oldstore;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate (savedInstanceState);
-        setContentView (R.layout.activity_main);
+import java.util.ArrayList;
+import java.util.List;
 
-        newstore = findViewById (R.id.newstore);
-        oldstore = findViewById (R.id.oldstore);
-        newstore.setOnClickListener (this);
-        oldstore.setOnClickListener (this);
-    }
+public class MainActivity extends AppCompatActivity{
 
-    @Override
-    public void onClick(View v){
-        switch(v.getId ()){
-            case R.id.newstore:
-                Intent intent1 = new Intent (this,com.example.black.waimai_seller.activity.new_store.class);
-                startActivity (intent1);
-                break;
-            case R.id.oldstore:
-                Intent intent2 = new Intent (this,com.example.black.waimai_seller.activity.oldstoreManger.class);
-                startActivity (intent2);
-                break;
+    private List<Fragment> list = new ArrayList<> ();
+    private BottomNavigationView navigationView;
+    FragmentManager fm ;
+    ViewPager viewPager;
+    FragmentPagerAdapter fragmentPagerAdapter;
+
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener ( ) {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId ( )) {
+                case R.id.index:
+                    viewPager.setCurrentItem (0);
+                    Log.e("tag-se","点击");
+                    return true;
+                case R.id.user:
+                    viewPager.setCurrentItem (1);
+                    return true;
+            }
+            return false;
         }
+    };
+
+    @Override
+    protected void onCreate(Bundle s){
+        super.onCreate (s);
+        fm = getSupportFragmentManager ();
+        setContentView (R.layout.test_viewpager);
+        initFragmentlist();
+        fragmentPagerAdapter = new pager_adapter (fm,list);
+        initview();
+        viewPager.setAdapter (fragmentPagerAdapter);
+        viewPager.setCurrentItem (0);
+        navigationView = findViewById (R.id.navigation);
+        navigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
+
+    void initFragmentlist(){
+        Fragment index = new Index();
+        Fragment user = new user ();
+        list.add (index);
+        list.add (user);
+    }
+
+    void initview(){
+        viewPager = findViewById (R.id.viewpager);
+    }
+
 }

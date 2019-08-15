@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">waimai_seller</string>
+    <string name="store_page_1">广德一店</string>
+    <string name="no_good">暂无商品</string>
+    <string name="loading">正在加载</string>
 </resources>

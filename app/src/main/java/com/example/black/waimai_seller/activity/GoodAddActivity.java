@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.black.waimai_seller.R;
+
 import com.example.black.waimai_seller.single_service.singleservice;
 import com.example.black.waimai_seller.tool.UriTopath;
 
@@ -31,7 +32,7 @@ import okhttp3.Response;
 
 import static android.util.Log.e;
 
-public class good_add extends Activity {
+public class GoodAddActivity extends Activity {
 
     private EditText good_name,good_price,good_inventory;
     private String str_good_name,str_good_price,str_good_inventory;
@@ -45,11 +46,12 @@ public class good_add extends Activity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage (msg);
+            Log.e ("tag-msg",""+msg.arg1);
             if(msg.arg1 == 1){
-                Intent intent = new Intent (good_add.this,goods_manger.class);
+                Intent intent = new Intent (GoodAddActivity.this,goods_manger.class);
                 startActivity (intent);
             }else{
-                Toast.makeText (good_add.this,"上架失败",Toast.LENGTH_SHORT).show ();
+                Toast.makeText (GoodAddActivity.this,"上架失败",Toast.LENGTH_SHORT).show ();
             }
         }
     };
@@ -130,6 +132,7 @@ public class good_add extends Activity {
                     }else{
                         message.arg1 = 0;
                     }
+                    handler.sendMessage (message);
                 }
             }.start ();
         }else {

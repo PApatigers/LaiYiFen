@@ -1,25 +1,30 @@
 package com.example.black.waimai_seller.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONArray;
 import com.example.black.waimai_seller.R;
 import com.example.black.waimai_seller.adapter.goods_adapter;
 import com.example.black.waimai_seller.base.good;
 import com.example.black.waimai_seller.single_service.singleservice;
 
-import com.alibaba.fastjson.JSONArray;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,6 +43,34 @@ public class goods_manger extends Activity {
     private goods_adapter adapter;
     private int store_id;
     private Button add;
+    private int temp_position;
+    private AlertDialog alertDialog;
+    private Toolbar toolbar;
+    private DialogInterface.OnClickListener negivative = new DialogInterface.OnClickListener ( ) {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            dialogInterface.dismiss ();
+        }
+    };
+    private DialogInterface.OnClickListener positive = new DialogInterface.OnClickListener ( ) {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            new Thread (new delete (good_list.get (temp_position).good_id)).start ();
+        }
+    };
+
+    Handler del_han = new Handler (){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage (msg);
+            if (msg.arg1 == 1){
+                good_list.remove (temp_position);
+                adapter.notifyDataSetChanged ();
+                Toast.makeText (goods_manger.this,"已下架",Toast.LENGTH_SHORT).show ();
+            }
+            alertDialog.dismiss ();
+        }
+    };
 
     Handler handler = new Handler (){
         @Override
@@ -59,6 +92,7 @@ public class goods_manger extends Activity {
     }
 
     void init(){
+        initoolbar();
         good_listview = findViewById (R.id.goods_list);
         add = findViewById (R.id.add_good);
 
@@ -77,10 +111,24 @@ public class goods_manger extends Activity {
         //进入修改商品信息
         good_listview.setOnItemClickListener (new AdapterView.OnItemClickListener ( ) {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
 
-                //进入修改商品信息
-                in_good(position);
+            }
+        });
+
+        //
+        good_listview.setOnItemLongClickListener (new AdapterView.OnItemLongClickListener ( ) {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                int good_id = good_list.get (position).good_id;
+                temp_position = position;
+                alertDialog = new AlertDialog.Builder (goods_manger.this)
+                        .setTitle ("提示")
+                        .setMessage ("是否下架该商品")
+                        .setNegativeButton ("取消",negivative)
+                        .setPositiveButton ("确定",positive)
+                        .show ();
+                return false;
             }
         });
 
@@ -92,6 +140,30 @@ public class goods_manger extends Activity {
             }
         });
     }
+
+    void initoolbar(){
+        toolbar = findViewById (R.id.toolbar);
+        toolbar.inflateMenu (R.menu.good_add);
+        toolbar.setOnMenuItemClickListener (new Toolbar.OnMenuItemClickListener ( ) {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId ()){
+                    case R.id.good_add:
+                        add_good ();
+                        break;
+                }
+                return false;
+            }
+        });
+        toolbar.setNavigationIcon (R.drawable.ic_back);
+        toolbar.setNavigationOnClickListener (new View.OnClickListener ( ) {
+            @Override
+            public void onClick(View v) {
+                goods_manger.this.finish ();
+            }
+        });
+    }
+
 
     void getdata(int store_id){
         Log.e ("tag","jinru");
@@ -114,7 +186,7 @@ public class goods_manger extends Activity {
         try{
             Response response = call.execute ();
             Log.e ("tag","jintu"+response.isSuccessful ());
-            if(response.isSuccessful ()){
+            if(response.isSuccessful () ){
                 String res = response.body ().string ();
                 Log.e ("tag","反馈" +res);
                 if(!res.equals ("kong")){
@@ -147,15 +219,58 @@ public class goods_manger extends Activity {
 
     //进入商品信息修改页
     void in_good(int position){
-        Intent intent = new Intent (this,good_alter.class);
+        Intent intent = new Intent (this, GoodAlterActivity.class);
         intent.putExtra ("good_id",good_list.get (position).get_good_id ());
         startActivity (intent);
     }
 
     //进入新增商品页
     void add_good(){
-        Intent intent = new Intent (this,good_add.class);
+        Intent intent = new Intent (this, GoodAddActivity.class);
         intent.putExtra ("store_id",store_id);
         startActivity (intent);
     }
+
+    //长按下架商品
+    class delete extends Thread{
+
+        private int id;
+        delete(int num){
+            this.id  = num;
+        }
+        @Override
+        public void run(){
+            OkHttpClient okHttpClient = singleservice.getClient ();
+            Message msg= new Message ();
+            FormBody formBody = new FormBody.Builder ()
+                    .add ("good_id",""+id)
+                    .build ();
+            Request request = new Request.Builder ()
+                    .url ("http://47.100.202.93/waimai/delete_good.php")
+                    .post (formBody)
+                    .build ();
+            Call call = okHttpClient.newCall (request);
+
+            try{
+                Response response = call.execute ();
+                if(response.isSuccessful ()){
+                    String res = response.body ().string ();
+                    Log.e ("tag-del",res);
+                    if(res.equals ("success")){
+                        msg.arg1 = 1;
+                    }else{
+                        msg.arg1 = 0;
+                    }
+
+                }
+                del_han.sendMessage (msg);
+            }catch (IOException e){
+                e.printStackTrace ();
+            }
+
+        }
+    }
+
+
+
 }
