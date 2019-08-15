@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.black.waimai_seller.adapter.Store_adapter;
-import com.example.black.waimai_seller.base.store;
+import com.example.black.waimai_seller.bean.store;
 import com.example.black.waimai_seller.R;
 
 import com.alibaba.fastjson.JSONArray;

@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.black.waimai_seller.base.store;
+import com.example.black.waimai_seller.bean.store;
 import com.example.black.waimai_seller.R;
 import com.example.black.waimai_seller.tool.imageLoader;
 
